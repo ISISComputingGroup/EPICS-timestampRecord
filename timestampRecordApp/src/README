@@ -1,0 +1,61 @@
+Introduction
+============
+
+This is an updated version of the timestampRecord. The timestampRecord
+takes its own EPICS timestamp and converts it into a displayable string
+using a choice of formats (see the menu in timestampRecord.dbd for
+current choices). 
+
+The original version was written by Susumu Yoshida and came to us 
+from Noboru Yamamoto of KEK but did not account for daylight savings 
+time (DST) and also did not have all the formats needed here at SLAC.
+
+To account for DST, the process function in timestampRecord.c calls 
+tsStampToLocal in base/src/libCom/tsSubr.c.  (Note that tsStampToText 
+does not offer all the desired formats and could not be used).  
+Unfortunately, as of EPICS 3.13.2, tsStampToLocal is a static function 
+so part of this release are a new version of tsSubr.c and tsDefs.h to 
+externalize tsStamp*Local and the associated TS_DETAIL structure. 
+
+This version has been tested on EPICS 3.13.1 and 3.13.2 on development
+systems.
+
+One Suggestion for Usage:
+At SLAC, we have all IOCs load the same database (VXStats.db) for VxWorks 
+and EPICS statistics (using the devVXStats device support).  We added one
+timestampRecord to this database (with a 1 second scan rate)  so that all 
+IOCs will have a consistently-named timestampRecord PV.
+
+Installation
+============
+
+This package assumes installation into an existing application development
+shared area.  It creates the directory timestampRecord containing all
+files.  Depending on the structure of your shared area, you may need
+to edit Makefile, Makefile.Vx, and Makefile.Host to correct TOP.  Use
+gnumake to build.  Do whatever you need to do to put the resultant 
+timestampRecord.o and tsSubr.o into the library (xxxLib) that is loaded 
+AFTER iocCore.  And get timestampRecord.dbd into your xxxApp.dbd by
+editting your xxxInclude.dbd file and rebuilding your xxx application.
+
+Edit Recordref-timestamp.html to correct the chapter number and add
+it to your Record Reference Manual with the appropriate name.
+
+Files in timestampRecord
+========================
+
+sample.db    \
+timestamp.def \ Files provided by Susumu Yoshida and Noboru Yamamoto of KEK.
+timestamp.sym /
+
+timestampRecord.c  \ Record support
+timestampRecord.dbd/
+
+tsSubr.c \ timestamp utilities - taken from R3.13.2 and modified
+tsDefs.h /                       to externalize tsStampToLocal.
+
+Makefile* - for gnumake
+
+Recordref-timestamp.html \ Documentation
+README                   /
+
