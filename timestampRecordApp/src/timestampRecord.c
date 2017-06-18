@@ -22,7 +22,6 @@
 #include	<types.h>
 #include	<stdioLib.h>
 #include	<lstLib.h>
-#include        <tsDefs.h> 
 #endif
 #include	<string.h>
 
